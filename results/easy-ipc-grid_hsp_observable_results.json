@@ -1,0 +1,162 @@
+[
+  {
+    "archive": "easy-ipc-grid-aaai_p10-5-5_hyp-0_10_0.tar.bz2",
+    "planner_profile": "HSP",
+    "Q": 1.0,
+    "S": 5,
+    "n_hyps": 5,
+    "true_goal_index": 0,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "obs_level": 10,
+    "domain": "easy-ipc-grid",
+    "runtime_sec": 3.686780899995938
+  },
+  {
+    "archive": "easy-ipc-grid-aaai_p10-5-5_hyp-0_30_0.tar.bz2",
+    "planner_profile": "HSP",
+    "Q": 1.0,
+    "S": 5,
+    "n_hyps": 5,
+    "true_goal_index": 0,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "obs_level": 30,
+    "domain": "easy-ipc-grid",
+    "runtime_sec": 3.057080299942754
+  },
+  {
+    "archive": "easy-ipc-grid-aaai_p10-5-5_hyp-0_50_0.tar.bz2",
+    "planner_profile": "HSP",
+    "Q": 1.0,
+    "S": 5,
+    "n_hyps": 5,
+    "true_goal_index": 0,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "obs_level": 50,
+    "domain": "easy-ipc-grid",
+    "runtime_sec": 2.8225794000318274
+  },
+  {
+    "archive": "easy-ipc-grid-aaai_p10-5-5_hyp-0_70_0.tar.bz2",
+    "planner_profile": "HSP",
+    "Q": 1.0,
+    "S": 5,
+    "n_hyps": 5,
+    "true_goal_index": 0,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "obs_level": 70,
+    "domain": "easy-ipc-grid",
+    "runtime_sec": 2.6191914998926222
+  },
+  {
+    "archive": "easy-ipc-grid-aaai_p10-5-5_hyp-0_full.tar.bz2",
+    "planner_profile": "HSP",
+    "Q": 1.0,
+    "S": 5,
+    "n_hyps": 5,
+    "true_goal_index": 0,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "obs_level": 100,
+    "domain": "easy-ipc-grid",
+    "runtime_sec": 2.7280061000492424
+  }
+]

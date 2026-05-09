@@ -1,0 +1,6 @@
+domain,obs_level,archive,Q,S,n_hyps,true_goal_index
+campus,10,bui-campus_generic_hyp-0_10_1.tar.bz2,1.0,2,2,0
+campus,30,bui-campus_generic_hyp-0_30_16.tar.bz2,1.0,2,2,0
+campus,50,bui-campus_generic_hyp-0_50_31.tar.bz2,1.0,2,2,1
+campus,70,bui-campus_generic_hyp-0_70_46.tar.bz2,1.0,2,2,1
+campus,100,bui-campus_generic_hyp-0_full_61.tar.bz2,1.0,2,2,0

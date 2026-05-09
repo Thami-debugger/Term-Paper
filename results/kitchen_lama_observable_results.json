@@ -1,0 +1,132 @@
+[
+  {
+    "archive": "kitchen_generic_hyp-0_10_0.tar.bz2",
+    "planner_profile": "LAMA",
+    "Q": 1.0,
+    "S": 3,
+    "n_hyps": 3,
+    "true_goal_index": 0,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "obs_level": 10,
+    "domain": "kitchen",
+    "runtime_sec": 3.380200900021009
+  },
+  {
+    "archive": "kitchen_generic_hyp-0_30_0.tar.bz2",
+    "planner_profile": "LAMA",
+    "Q": 1.0,
+    "S": 3,
+    "n_hyps": 3,
+    "true_goal_index": 0,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "obs_level": 30,
+    "domain": "kitchen",
+    "runtime_sec": 3.2362149000400677
+  },
+  {
+    "archive": "kitchen_generic_hyp-0_50_0.tar.bz2",
+    "planner_profile": "LAMA",
+    "Q": 1.0,
+    "S": 3,
+    "n_hyps": 3,
+    "true_goal_index": 2,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "obs_level": 50,
+    "domain": "kitchen",
+    "runtime_sec": 3.068683399935253
+  },
+  {
+    "archive": "kitchen_generic_hyp-0_70_0.tar.bz2",
+    "planner_profile": "LAMA",
+    "Q": 1.0,
+    "S": 3,
+    "n_hyps": 3,
+    "true_goal_index": 1,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "obs_level": 70,
+    "domain": "kitchen",
+    "runtime_sec": 3.3958765000570565
+  },
+  {
+    "archive": "kitchen_generic_hyp-0_full_0.tar.bz2",
+    "planner_profile": "LAMA",
+    "Q": 1.0,
+    "S": 3,
+    "n_hyps": 3,
+    "true_goal_index": 1,
+    "costs_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "costs_not_O": [
+      1000000.0,
+      1000000.0,
+      1000000.0
+    ],
+    "posteriors": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "obs_level": 100,
+    "domain": "kitchen",
+    "runtime_sec": 3.0458054000046104
+  }
+]

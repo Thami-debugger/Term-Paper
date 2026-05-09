@@ -1,0 +1,6 @@
+domain,obs_level,archive,Q,S,n_hyps,true_goal_index
+logistics,10,logistics-aaai_p01_hyp-0_10_0.tar.bz2,1.0,10,10,0
+logistics,30,logistics-aaai_p01_hyp-0_30_0.tar.bz2,1.0,10,10,4
+logistics,50,logistics-aaai_p01_hyp-0_50_0.tar.bz2,1.0,10,10,5
+logistics,70,logistics-aaai_p01_hyp-0_70_0.tar.bz2,1.0,10,10,2
+logistics,100,logistics-aaai_p01_hyp-0_full.tar.bz2,1.0,10,10,5
