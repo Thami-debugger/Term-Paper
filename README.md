@@ -15,6 +15,10 @@ This repository contains the code and data for the COMS7044A reproducibility ass
 - Python 3.13 (recommended) with dependencies installed in `.venv`.
 - Fast Downward available to the solver environment.
 
+### Dependency Summary
+- Python packages are installed from `requirements.txt`.
+- External planner dependency: Fast Downward (not a pip package).
+
 ## How To Run
 
 ### Environment Setup (Required for Both Demo and Reproduction)
@@ -28,6 +32,22 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 #### 2) Install dependencies (if not already installed)
 ```powershell
 pip install -r requirements.txt
+```
+
+#### 3) Ensure Fast Downward is available
+
+The solver calls Fast Downward as an external program. You must either:
+- install `fast-downward` / `fast-downward.py` so it is on PATH, or
+- set the `FAST_DOWNWARD` environment variable to the full path of `fast-downward.py`.
+
+PowerShell example:
+```powershell
+$env:FAST_DOWNWARD = "C:\downward\fast-downward.py"
+```
+
+Quick check (PowerShell):
+```powershell
+python -c "from src.solver import get_fd_command; print('Fast Downward command:', get_fd_command())"
 ```
 
 ---
