@@ -49,7 +49,7 @@ We attempted to reproduce the core experimental results of Ramírez \& Geffner (
 We implemented all four components specified by the assignment: (1) a PDDL compiler that generates compliant ($G{+}O$) and non-compliant ($G{+}\overline{O}$) planning problems per Definition~2 and Proposition~3 of the paper; (2) integration with Fast Downward via the Windows Subsystem for Linux (WSL); (3) a Bayesian scoring layer implementing the Boltzmann likelihood model ($\beta = 1$) and posterior computation via Bayes' rule; and (4) an evaluation pipeline over the original benchmark archives provided with the paper. All glue code was written in Python. We used the original benchmark archives from the paper's project website.
 
 \paragraph{Results.}
-Our reproduction \textbf{partially failed} due to a critical infrastructure limitation: Fast Downward, invoked through WSL on Windows, was unable to find valid plans for any problem instance, returning infinite costs for all hypotheses. This caused the Bayesian scorer to assign uniform posteriors across all goals, yielding Q~$= 1.0$ (trivially, the true goal is always in the tied set) and S~$=$ $|\mathcal{G}|$ (every goal is equally ranked as most likely). While our pipeline infrastructure is correct, the planner integration produced degenerate results that do not match the paper's findings.
+Our reproduction is currently \textbf{partial rather than blocked}. After fixing solver/WSL integration and scoring, planner-backed runs execute successfully on validated sampled instances (for example, the campus domain at 10\% observations for all three planner profiles). However, full Table~1 replication remains incomplete because many domain/observation cells are still missing in the current run set.
 
 \paragraph{What was easy.}
 Implementing the PDDL transformation (the compiler) from the paper's formal definitions was straightforward. The benchmark data from the original project website was well-structured and usable directly. The Bayesian scoring mathematics translated directly from the paper.
@@ -144,7 +144,7 @@ The pipeline iterates over benchmark archives for each domain and observation le
 
 \subsection{Benchmark Data}
 
-We used the original benchmark archives provided at the paper's project website (\url{https://sites.google.com/site/prasplanning}), stored in \texttt{benchmarks/experiments/}. Each domain has five observation levels (10\%, 30\%, 50\%, 70\%, 100\%). We ran \texttt{max\_instances=1} per obs-level per domain due to computational constraints (WSL overhead).
+We used the original benchmark archives provided at the paper's project website (\url{https://sites.google.com/site/prasplanning}), stored in \texttt{benchmarks/experiments/}. The site's ``Benchmarks \& Software uploaded'' page states that the benchmarks and software used in the experiments were uploaded in the site's Files section, which is the provenance for the benchmark bundle used here. Each domain has five observation levels (10\%, 30\%, 50\%, 70\%, 100\%). We ran \texttt{max\_instances=1} per obs-level per domain due to computational constraints (WSL overhead).
 
 \subsection{Design Decisions and Ambiguities}
 
@@ -163,20 +163,13 @@ Experiments were run on a Windows 11 machine with Fast Downward executed via WSL
 \section{Results}
 %% -------------------------------------------------------
 
-\subsection{Planner Execution Failure}
+\subsection{Planner Execution Status}
 
-A critical issue prevents direct comparison with the paper: Fast Downward, when invoked via WSL on Windows, consistently failed to return valid plans for any problem instance. All reported plan costs were $10^6$ (treated as $\infty$), resulting in:
-\begin{itemize}
-  \item \textbf{Uniform posteriors} over all candidate goals.
-  \item \textbf{Q~$= 1.0$} for all domain/planner/obs-level combinations (trivially satisfied since the true goal is always in the tied set).
-  \item \textbf{S~$= |\mathcal{G}|$} (all goals tied as equally most likely).
-\end{itemize}
-
-This is a \emph{negative} reproduction result: the pipeline is structurally correct, but the planner integration failed on Windows/WSL, preventing meaningful differentiation between hypotheses.
+Planner execution is now working through a configured WSL distro for sampled runs, but coverage is still incomplete across all domain/observation/planner combinations needed for full paper replication. Failed cells are surfaced explicitly and skipped, rather than being converted into fabricated uniform-posteriors outputs.
 
 \subsection{Runtime Results}
 
-Despite the planner failing to return plans, the framework did complete and return runtimes that reflect the overhead of the WSL subprocess and the number of hypotheses. Table~\ref{tab:our-results} shows our measured runtimes.
+The framework now returns real runtimes and scores for completed cells. Table~\ref{tab:our-results} shows currently available results from the sampled run set; missing entries correspond to cells not yet completed successfully.
 
 \begin{table}[H]
 \centering

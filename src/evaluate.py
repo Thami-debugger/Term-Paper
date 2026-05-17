@@ -119,7 +119,7 @@ def run_instance(
                 )
             except Exception as exc:
                 print(f"[WARN] Solver failed for hyp {i} in {archive_name}: {exc}")
-                c_O, c_not_O = 1_000_000, 1_000_000
+                return None
             costs.append((c_O, c_not_O))
 
         # --- Compute posteriors ---

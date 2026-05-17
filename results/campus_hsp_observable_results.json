@@ -3,115 +3,23 @@
     "archive": "bui-campus_generic_hyp-0_10_1.tar.bz2",
     "planner_profile": "HSP",
     "Q": 1.0,
-    "S": 2,
+    "S": 1,
     "n_hyps": 2,
     "true_goal_index": 0,
     "costs_O": [
-      1000000.0,
-      1000000.0
+      9.0,
+      11.0
     ],
     "costs_not_O": [
       1000000.0,
       1000000.0
     ],
     "posteriors": [
-      0.5,
-      0.5
+      0.6378903113466692,
+      0.3621096886533309
     ],
     "obs_level": 10,
     "domain": "campus",
-    "runtime_sec": 1.1679726000875235
-  },
-  {
-    "archive": "bui-campus_generic_hyp-0_30_16.tar.bz2",
-    "planner_profile": "HSP",
-    "Q": 1.0,
-    "S": 2,
-    "n_hyps": 2,
-    "true_goal_index": 0,
-    "costs_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "costs_not_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "posteriors": [
-      0.5,
-      0.5
-    ],
-    "obs_level": 30,
-    "domain": "campus",
-    "runtime_sec": 1.0805737999035046
-  },
-  {
-    "archive": "bui-campus_generic_hyp-0_50_31.tar.bz2",
-    "planner_profile": "HSP",
-    "Q": 1.0,
-    "S": 2,
-    "n_hyps": 2,
-    "true_goal_index": 1,
-    "costs_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "costs_not_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "posteriors": [
-      0.5,
-      0.5
-    ],
-    "obs_level": 50,
-    "domain": "campus",
-    "runtime_sec": 1.16384829999879
-  },
-  {
-    "archive": "bui-campus_generic_hyp-0_70_46.tar.bz2",
-    "planner_profile": "HSP",
-    "Q": 1.0,
-    "S": 2,
-    "n_hyps": 2,
-    "true_goal_index": 1,
-    "costs_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "costs_not_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "posteriors": [
-      0.5,
-      0.5
-    ],
-    "obs_level": 70,
-    "domain": "campus",
-    "runtime_sec": 1.1306674999650568
-  },
-  {
-    "archive": "bui-campus_generic_hyp-0_full_61.tar.bz2",
-    "planner_profile": "HSP",
-    "Q": 1.0,
-    "S": 2,
-    "n_hyps": 2,
-    "true_goal_index": 0,
-    "costs_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "costs_not_O": [
-      1000000.0,
-      1000000.0
-    ],
-    "posteriors": [
-      0.5,
-      0.5
-    ],
-    "obs_level": 100,
-    "domain": "campus",
-    "runtime_sec": 1.1429259000578895
+    "runtime_sec": 5.833756500011077
   }
 ]

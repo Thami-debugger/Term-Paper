@@ -72,6 +72,61 @@ def make_obs_fluent_name(obs_index: int) -> str:
     return f"obs_reached_{obs_index}"
 
 
+def _find_matching_paren(text: str, open_idx: int) -> int:
+    """Return index of matching ')' for the '(' at open_idx."""
+    depth = 0
+    for i in range(open_idx, len(text)):
+        ch = text[i]
+        if ch == '(':
+            depth += 1
+        elif ch == ')':
+            depth -= 1
+            if depth == 0:
+                return i
+    raise ValueError("Unbalanced parentheses in PDDL text")
+
+
+def _inject_predicates(domain_text: str, obs_list: list[str]) -> str:
+    pred_start = domain_text.lower().find('(:predicates')
+    if pred_start == -1:
+        raise ValueError("Could not find (:predicates block in domain")
+
+    pred_end = _find_matching_paren(domain_text, pred_start)
+    additions = ''.join(f"\n        ({make_obs_fluent_name(i)})" for i in range(len(obs_list)))
+    return domain_text[:pred_end] + additions + domain_text[pred_end:]
+
+
+def _replace_action_effect(action_block: str, new_effect: str) -> str:
+    lower_block = action_block.lower()
+    effect_idx = lower_block.find(':effect')
+    if effect_idx == -1:
+        return action_block
+
+    expr_start = effect_idx + len(':effect')
+    while expr_start < len(action_block) and action_block[expr_start].isspace():
+        expr_start += 1
+    if expr_start >= len(action_block) or action_block[expr_start] != '(':
+        return action_block
+
+    expr_end = _find_matching_paren(action_block, expr_start)
+    existing = action_block[expr_start:expr_end + 1]
+    combined = f"(and {existing} {new_effect})"
+    return action_block[:expr_start] + combined + action_block[expr_end + 1:]
+
+
+def _inject_effect_for_action(domain_text: str, action_name: str, new_effect: str) -> str:
+    pattern = re.compile(r'\(:action\s+' + re.escape(action_name) + r'\b', re.IGNORECASE)
+    match = pattern.search(domain_text)
+    if not match:
+        return domain_text
+
+    action_start = match.start()
+    action_end = _find_matching_paren(domain_text, action_start)
+    action_block = domain_text[action_start:action_end + 1]
+    updated_block = _replace_action_effect(action_block, new_effect)
+    return domain_text[:action_start] + updated_block + domain_text[action_end + 1:]
+
+
 def augment_domain(domain_text: str, obs_list: list[str]) -> str:
     """
     Add observation-tracking fluents and chain effects to the domain.
@@ -87,29 +142,15 @@ def augment_domain(domain_text: str, obs_list: list[str]) -> str:
     if not obs_list:
         return domain_text
 
-    n = len(obs_list)
-
     # --- 1. Add new predicates ---
-    new_preds = "\n".join(
-        f"               (obs_reached_{i})" for i in range(n)
-    )
-    # Insert before closing of :predicates block
-    domain_text = re.sub(
-        r'(\(:predicates\s*(?:[^)]*\)\s*)*\))',
-        lambda m: m.group(0)[:-1] + f"\n{new_preds}\n               )",
-        domain_text,
-        count=1,
-        flags=re.DOTALL
-    )
+    domain_text = _inject_predicates(domain_text, obs_list)
 
-    # --- 2. Add conditional effects to each observed action ---
+    # --- 2. Add conditional effects to each observed action schema ---
     for k, obs in enumerate(obs_list):
         # obs is like "unstack_r_p" — reconstruct action name and params
         parts = obs.split('_')
         action_name = parts[0]
-        params = parts[1:]
 
-        fluent_to_set = f"obs_reached_{k}"
         if k == 0:
             condition = None  # unconditional: just execute the action
         else:
@@ -120,25 +161,7 @@ def augment_domain(domain_text: str, obs_list: list[str]) -> str:
         else:
             new_effect = f"(when ({condition}) (obs_reached_{k}))"
 
-        # Find the action block and append to its :effect
-        # We match the action by name (case-insensitive)
-        pattern = re.compile(
-            r'(\(:action\s+' + re.escape(action_name) + r'\b.*?:effect\s*\n?\s*)(.*?)\)\s*\)',
-            re.IGNORECASE | re.DOTALL
-        )
-
-        def inject_effect(m, effect=new_effect):
-            prefix = m.group(1)
-            body = m.group(2).strip()
-            # body is either "(and ...)" or a single atom
-            if body.startswith('(and'):
-                # Insert inside the existing (and ...)
-                body = body[:-1] + f"\n                   {effect})"
-            else:
-                body = f"(and {body}\n                   {effect})"
-            return prefix + body + "))"
-
-        domain_text = pattern.sub(inject_effect, domain_text, count=1)
+        domain_text = _inject_effect_for_action(domain_text, action_name, new_effect)
 
     return domain_text
 

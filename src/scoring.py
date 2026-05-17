@@ -8,26 +8,43 @@ Model
 -----
 For each candidate goal G_i with costs c(G_i, O) and c(G_i, ~O):
 
-    P(O | G_i)  ∝ exp(-β · c(G_i, O))
-    P(O | ~G_i) ∝ exp(-β · c(G_i, ~O))
+        Δ(G_i, O) = c(G_i, O) - c(G_i, ~O)
+        P(O | G_i) / P(~O | G_i) = exp(-β · Δ(G_i, O))
+        P(O | G_i) = exp(-β · Δ(G_i, O)) / (1 + exp(-β · Δ(G_i, O)))
 
 Posterior (equal priors assumed by default):
 
-    P(G_i | O) ∝ P(O | G_i) · P(G_i)
+        P(G_i | O) ∝ P(O | G_i) · P(G_i)
 
 Normalised using the log-sum-exp trick for numerical stability.
 
 Metrics
 -------
-  Q  : 1 if the true goal is among the highest-posterior goals, else 0
-  S  : number of goals tied at the maximum posterior (specificity; lower = better)
+    Q  : 1 if the true goal is among the highest-posterior goals, else 0
+    S  : number of goals tied at the maximum posterior (specificity; lower = better)
 """
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 INF_COST = 1_000_000  # must match solver.py
+
+
+def _replace_infinite_costs(costs: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    """Replace infinite sentinel costs with the maximum finite cost from the batch."""
+    finite_costs = [cost for pair in costs for cost in pair if cost < INF_COST]
+    if not finite_costs:
+        return costs
+
+    fallback_cost = max(finite_costs)
+    normalized_costs = []
+    for c_O, c_not_O in costs:
+        normalized_costs.append((
+            fallback_cost if c_O >= INF_COST else c_O,
+            fallback_cost if c_not_O >= INF_COST else c_not_O,
+        ))
+    return normalized_costs
 
 
 @dataclass
@@ -69,22 +86,27 @@ def compute_posteriors(
     if prior is None:
         prior = [1.0 / n] * n
 
+    normalized_costs = _replace_infinite_costs(costs)
+
     results = []
-    for i, (atoms, (c_O, c_not_O)) in enumerate(zip(hyps, costs)):
+    for i, (atoms, (raw_c_O, raw_c_not_O), (c_O, c_not_O)) in enumerate(
+        zip(hyps, costs, normalized_costs)
+    ):
         r = HypothesisResult(
             index=i,
             atoms=atoms,
-            cost_O=c_O,
-            cost_not_O=c_not_O,
+            cost_O=raw_c_O,
+            cost_not_O=raw_c_not_O,
             delta=c_O - c_not_O,
             is_true_goal=(i == true_goal_index),
         )
-        # Log-likelihood: -β · c(G, O)
-        # When c_O == INF_COST (unsolvable), likelihood → 0 → log = -∞
-        if c_O >= INF_COST:
+        # Benchmark code uses a logistic transform of -βΔ(G, O).
+        # log(sigmoid(x)) = -log(1 + exp(-x)); here x = -βΔ.
+        if raw_c_O >= INF_COST and raw_c_not_O >= INF_COST:
             r.log_likelihood = -math.inf
         else:
-            r.log_likelihood = -beta * c_O
+            delta_term = beta * r.delta
+            r.log_likelihood = -math.log1p(math.exp(delta_term))
 
         results.append(r)
 

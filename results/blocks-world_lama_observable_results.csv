@@ -1,6 +1,6 @@
 domain,obs_level,archive,Q,S,n_hyps,true_goal_index
-blocks-world,10,block-words-aaai_p01_hyp-0_10_0.tar.bz2,1.0,21,21,0
-blocks-world,30,block-words-aaai_p01_hyp-0_30_0.tar.bz2,1.0,21,21,5
-blocks-world,50,block-words-aaai_p01_hyp-0_50_0.tar.bz2,1.0,21,21,9
-blocks-world,70,block-words-aaai_p01_hyp-0_70_0.tar.bz2,1.0,21,21,13
-blocks-world,100,block-words-aaai_p01_hyp-0_full.tar.bz2,1.0,21,21,16
+blocks-world,10,block-words-aaai_p01_hyp-0_10_0.tar.bz2,0.0,6,21,0
+blocks-world,30,block-words-aaai_p01_hyp-0_30_0.tar.bz2,0.0,2,21,5
+blocks-world,50,block-words-aaai_p01_hyp-0_50_0.tar.bz2,0.0,1,21,9
+blocks-world,70,block-words-aaai_p01_hyp-0_70_0.tar.bz2,0.0,1,21,13
+blocks-world,100,block-words-aaai_p01_hyp-0_full.tar.bz2,0.0,1,21,16

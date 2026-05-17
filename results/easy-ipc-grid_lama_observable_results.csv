@@ -1,6 +1,6 @@
 domain,obs_level,archive,Q,S,n_hyps,true_goal_index
-easy-ipc-grid,10,easy-ipc-grid-aaai_p10-5-5_hyp-0_10_0.tar.bz2,1.0,5,5,0
-easy-ipc-grid,30,easy-ipc-grid-aaai_p10-5-5_hyp-0_30_0.tar.bz2,1.0,5,5,0
-easy-ipc-grid,50,easy-ipc-grid-aaai_p10-5-5_hyp-0_50_0.tar.bz2,1.0,5,5,0
-easy-ipc-grid,70,easy-ipc-grid-aaai_p10-5-5_hyp-0_70_0.tar.bz2,1.0,5,5,0
-easy-ipc-grid,100,easy-ipc-grid-aaai_p10-5-5_hyp-0_full.tar.bz2,1.0,5,5,0
+easy-ipc-grid,10,easy-ipc-grid-aaai_p10-5-5_hyp-0_10_0.tar.bz2,0.0,1,5,0
+easy-ipc-grid,30,easy-ipc-grid-aaai_p10-5-5_hyp-0_30_0.tar.bz2,1.0,2,5,0
+easy-ipc-grid,50,easy-ipc-grid-aaai_p10-5-5_hyp-0_50_0.tar.bz2,1.0,1,5,0
+easy-ipc-grid,70,easy-ipc-grid-aaai_p10-5-5_hyp-0_70_0.tar.bz2,1.0,2,5,0
+easy-ipc-grid,100,easy-ipc-grid-aaai_p10-5-5_hyp-0_full.tar.bz2,1.0,1,5,0

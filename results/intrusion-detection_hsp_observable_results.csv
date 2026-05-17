@@ -1,6 +1,2 @@
 domain,obs_level,archive,Q,S,n_hyps,true_goal_index
-intrusion-detection,10,intrusion-detection-aaai_p10_hyp-0_10_0.tar.bz2,1.0,10,10,0
-intrusion-detection,30,intrusion-detection-aaai_p10_hyp-0_30_0.tar.bz2,1.0,10,10,7
-intrusion-detection,50,intrusion-detection-aaai_p10_hyp-0_50_0.tar.bz2,1.0,10,10,9
-intrusion-detection,70,intrusion-detection-aaai_p10_hyp-0_70_0.tar.bz2,1.0,10,10,1
-intrusion-detection,100,intrusion-detection-aaai_p10_hyp-0_full.tar.bz2,1.0,10,10,0
+intrusion-detection,10,intrusion-detection-aaai_p10_hyp-0_10_0.tar.bz2,0.0,1,10,0

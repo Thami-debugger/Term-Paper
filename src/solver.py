@@ -16,6 +16,7 @@ import sys
 import tempfile
 import shutil
 import time
+from pathlib import PureWindowsPath
 
 # -----------------------------------------------------------------------
 # Configuration
@@ -28,6 +29,47 @@ PLANNER_PROFILES: dict[str, list[str]] = {
     'LAMA': ['--alias', 'seq-sat-lama-2011'],
     'GREEDY_LAMA': ['--alias', 'lama-first'],
 }
+
+WSL_DISTRO_EXCLUSIONS = {'docker-desktop', 'docker-desktop-data'}
+
+
+def _list_wsl_distros() -> list[str]:
+    result = subprocess.run(
+        ['wsl', '-l', '-q'],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return [
+        line.replace('\x00', '').strip()
+        for line in result.stdout.splitlines()
+        if line.replace('\x00', '').strip()
+    ]
+
+
+def _probe_wsl_fast_downward(distro: str) -> list[str] | None:
+    if distro.lower() in WSL_DISTRO_EXCLUSIONS:
+        return None
+
+    script_result = subprocess.run(
+        [
+            'wsl', '-d', distro, '--exec', 'sh', '-lc',
+            'if command -v python3 >/dev/null 2>&1 && [ -f "$HOME/downward/fast-downward.py" ]; then '
+            'printf "%s\n%s" python3 "$HOME/downward/fast-downward.py"; '
+            'fi'
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if script_result.returncode != 0:
+        return None
+
+    lines = [line.strip() for line in script_result.stdout.splitlines() if line.strip()]
+    if len(lines) != 2:
+        return None
+
+    python_cmd, script_path = lines
+    return ['wsl', '-d', distro, python_cmd, script_path]
 
 # Attempt to locate Fast Downward automatically
 def _find_fast_downward() -> list[str]:
@@ -54,7 +96,16 @@ def _find_fast_downward() -> list[str]:
 
     # 4. WSL fallback (Windows)
     if sys.platform == 'win32':
-        return ['wsl', 'python3', '~/downward/fast-downward.py']
+        preferred_distro = os.environ.get('FAST_DOWNWARD_WSL_DISTRO')
+        if preferred_distro:
+            detected = _probe_wsl_fast_downward(preferred_distro)
+            if detected is not None:
+                return detected
+
+        for distro in _list_wsl_distros():
+            detected = _probe_wsl_fast_downward(distro)
+            if detected is not None:
+                return detected
 
     raise FileNotFoundError(
         "Fast Downward not found. Set the FAST_DOWNWARD environment variable "
@@ -64,6 +115,7 @@ def _find_fast_downward() -> list[str]:
 
 
 _FD_CMD: list[str] | None = None
+_WSL_MOUNT_ROOT_CACHE: dict[tuple[str, str], str] = {}
 
 
 def get_fd_command() -> list[str]:
@@ -71,6 +123,74 @@ def get_fd_command() -> list[str]:
     if _FD_CMD is None:
         _FD_CMD = _find_fast_downward()
     return _FD_CMD
+
+
+def _is_wsl_command(cmd: list[str]) -> bool:
+    return len(cmd) >= 1 and cmd[0].lower() == 'wsl'
+
+
+def _resolve_wsl_mount_root(distro: str, drive: str) -> str:
+    cache_key = (distro, drive)
+    if cache_key in _WSL_MOUNT_ROOT_CACHE:
+        return _WSL_MOUNT_ROOT_CACHE[cache_key]
+
+    env_root = os.environ.get('WSL_MOUNT_ROOT')
+    if env_root:
+        root = env_root.rstrip('/')
+        _WSL_MOUNT_ROOT_CACHE[cache_key] = root
+        return root
+
+    for candidate in ('/mnt/host', '/mnt'):
+        probe_path = f"{candidate}/{drive}"
+        probe = subprocess.run(
+            ['wsl', '-d', distro, '--exec', 'test', '-d', probe_path],
+            capture_output=True,
+            text=True,
+        )
+        if probe.returncode == 0:
+            _WSL_MOUNT_ROOT_CACHE[cache_key] = candidate
+            return candidate
+
+    # Fallback keeps previous behavior if probing fails unexpectedly.
+    _WSL_MOUNT_ROOT_CACHE[cache_key] = '/mnt/host'
+    return '/mnt/host'
+
+
+def _to_wsl_path(path: str, distro: str) -> str:
+    win_path = PureWindowsPath(path)
+    drive = win_path.drive.rstrip(':').lower()
+    if not drive:
+        raise RuntimeError(f"Expected an absolute Windows path, got: {path}")
+
+    mount_root = _resolve_wsl_mount_root(distro, drive)
+    relative_parts = [part for part in win_path.parts[1:] if part not in ('\\', '/')]
+    return '/'.join([mount_root, drive, *relative_parts])
+
+
+def _build_fd_command(
+    fd_cmd: list[str],
+    domain_path: str,
+    problem_path: str,
+    planner_args: list[str],
+) -> list[str]:
+    alias_mode = len(planner_args) >= 1 and planner_args[0] == '--alias'
+
+    if not _is_wsl_command(fd_cmd):
+        if alias_mode:
+            return [*fd_cmd, *planner_args, domain_path, problem_path]
+        return [*fd_cmd, domain_path, problem_path, *planner_args]
+
+    if len(fd_cmd) < 5 or fd_cmd[1] != '-d':
+        raise RuntimeError(f"Unexpected WSL Fast Downward command: {' '.join(fd_cmd)}")
+
+    distro = fd_cmd[2]
+    python_cmd = fd_cmd[3]
+    wsl_script = fd_cmd[4]
+    wsl_domain = _to_wsl_path(domain_path, distro)
+    wsl_problem = _to_wsl_path(problem_path, distro)
+    if alias_mode:
+        return ['wsl', '-d', distro, '--exec', python_cmd, wsl_script, *planner_args, wsl_domain, wsl_problem]
+    return ['wsl', '-d', distro, '--exec', python_cmd, wsl_script, wsl_domain, wsl_problem, *planner_args]
 
 
 # -----------------------------------------------------------------------
@@ -112,11 +232,12 @@ def solve(
     tmpdir = tempfile.mkdtemp(prefix='fd-run-')
     try:
         # fast-downward.py expects: <domain> <problem> <search/alias args>
-        cmd = get_fd_command() + [
+        cmd = _build_fd_command(
+            get_fd_command(),
             domain_path,
             problem_path,
-            *PLANNER_PROFILES[profile_key],
-        ]
+            PLANNER_PROFILES[profile_key],
+        )
 
         try:
             result = subprocess.run(
@@ -143,6 +264,20 @@ def solve(
                 time.sleep(0.1)
         else:
             shutil.rmtree(tmpdir, ignore_errors=True)
+
+    if result.returncode != 0:
+        output_lower = output.lower()
+        unsolved_exit = result.returncode in (11, 12)
+        unsolved_message = 'search stopped without finding a solution' in output_lower
+        if unsolved_exit or unsolved_message:
+            return float(INF_COST)
+
+        raise RuntimeError(
+            "Fast Downward exited with a non-zero status.\n"
+            f"Command: {' '.join(cmd)}\n"
+            f"Exit code: {result.returncode}\n"
+            f"Output:\n{output.strip()}"
+        )
 
     return _parse_cost(output)
 
