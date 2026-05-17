@@ -44,6 +44,7 @@
     ],
     "obs_level": 10,
     "domain": "intrusion-detection",
-    "runtime_sec": 22.70582149999973
+    "runtime_sec": 54.03999649999605,
+    "pipeline_wall_time": 54.03999649999605
   }
 ]

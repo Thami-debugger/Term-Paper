@@ -1,6 +1,2 @@
 domain,obs_level,archive,Q,S,n_hyps,true_goal_index
-kitchen,10,kitchen_generic_hyp-0_10_0.tar.bz2,1.0,3,3,0
-kitchen,30,kitchen_generic_hyp-0_30_0.tar.bz2,1.0,3,3,0
-kitchen,50,kitchen_generic_hyp-0_50_0.tar.bz2,1.0,3,3,2
-kitchen,70,kitchen_generic_hyp-0_70_0.tar.bz2,1.0,3,3,1
-kitchen,100,kitchen_generic_hyp-0_full_0.tar.bz2,1.0,3,3,1
+kitchen,10,kitchen_generic_hyp-0_10_1.tar.bz2,1.0,1,3,2
