@@ -1,3 +1,2 @@
 domain,obs_level,archive,Q,S,n_hyps,true_goal_index
 blocks-world,10,block-words-aaai_p01_hyp-0_10_0.tar.bz2,0.0,1,21,0
-blocks-world,10,block-words-aaai_p01_hyp-1_10_0.tar.bz2,0.0,1,21,1
